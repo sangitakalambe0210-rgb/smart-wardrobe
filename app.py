@@ -106,7 +106,7 @@ with tab2:
     j_list=jewellery_f if gender=="Female" else jewellery_m
     jcols=st.columns(4)
     for j_idx,j_name in enumerate(j_list):
-        with jcols[j_idx%4]:
+        with jcols[j_id*%4]:
             st.markdown(f"<div class='dress-card'><b>{j_name}</b><br><small>Matches with {style}</small></div>",unsafe_allow_html=True)
             if st.button("Add Jewellery",key=f"jew_{j_idx}_{gender}_{style}"):
                 st.session_state.wishlist.append({"name":j_name,"type":"Jewellery","color":"Gold","style":style})
@@ -115,7 +115,7 @@ with tab2:
     f_list=footwear_f if gender=="Female" else footwear_m
     fcols=st.columns(4)
     for f_idx,f_name in enumerate(f_list):
-        with fcols[f_idx%4]:
+        with fcols[f_id*%4]:
             st.markdown(f"<div class='dress-card'><b>{f_name}</b><br><small>Comfort + Style</small></div>",unsafe_allow_html=True)
             if st.button("Add Footwear",key=f"foot_{f_idx}_{gender}_{style}"):
                 st.session_state.wishlist.append({"name":f_name,"type":"Footwear","color":"Black","style":style})

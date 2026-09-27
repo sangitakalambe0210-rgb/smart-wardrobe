@@ -1,6 +1,7 @@
 import streamlit as st
 import random
 st.set_page_config(page_title="Smart Wardrobe AI Pro", page_icon="👗", layout="wide")
+
 st.markdown("""
 <style>
 .green-box { background:#E8F5E9; border-radius:12px; padding:15px; border-left:5px solid #4CAF50; min-height:160px; }
@@ -45,13 +46,28 @@ wardrobe, styles_f_main, styles_m_main = get_wardrobe()
 st.sidebar.title("Your Profile")
 user_name = st.sidebar.text_input("Name:", value="Aditi")
 gender = st.sidebar.selectbox("Gender", ["Female","Male"])
+
+# FIX: Reset body shape when gender changes
+if gender == "Male" and st.session_state.sel_body in ["Pear","Hourglass","Apple"]:
+    st.session_state.sel_body = "Trapezoid"
+if gender == "Female" and st.session_state.sel_body in ["Trapezoid","Oval","Triangle"]:
+    st.session_state.sel_body = "Pear"
+
+st.sidebar.markdown("### Body & Skin Details")
 st.sidebar.markdown("**Select Body Shape:**")
-st.sidebar.markdown('<div class="kurti-box"><svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg"><g transform="translate(10,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 Q40 28 60 22 L55 65 Q40 75 25 65 Z" fill="black"/><text x="18" y="100" font-size="9" font-weight="bold">Pear</text></g><g transform="translate(110,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 Q40 28 60 22 L55 40 Q40 46 25 40 Z" fill="black"/><ellipse cx="40" cy="55" rx="12" ry="4" fill="none" stroke="#FFD700" stroke-width="3"/><text x="5" y="100" font-size="9" font-weight="bold">Hourglass</text></g><g transform="translate(210,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 L60 22 L60 70 L20 70 Z" fill="black"/><text x="8" y="100" font-size="9" font-weight="bold">Rectangle</text></g><g transform="translate(310,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M15 22 Q40 28 65 22 L55 65 Q40 70 25 65 Z" fill="black"/><text x="0" y="100" font-size="7" font-weight="bold">Inv Tri</text></g></svg></div>', unsafe_allow_html=True)
+
+# === MAIN FIX: Gender wise BLACK & YELLOW diagram ===
+if gender == "Female":
+    st.sidebar.markdown('<div class="kurti-box"><svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg"><g transform="translate(10,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 Q40 28 60 22 L55 65 Q40 75 25 65 Z" fill="black"/><text x="18" y="100" font-size="9" font-weight="bold">Pear</text></g><g transform="translate(110,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 Q40 28 60 22 L55 40 Q40 46 25 40 Z" fill="black"/><ellipse cx="40" cy="55" rx="12" ry="4" fill="none" stroke="#FFD700" stroke-width="3"/><text x="5" y="100" font-size="9" font-weight="bold">Hourglass</text></g><g transform="translate(210,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 L60 22 L60 70 L20 70 Z" fill="black"/><text x="8" y="100" font-size="9" font-weight="bold">Rectangle</text></g><g transform="translate(310,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M15 22 Q40 28 65 22 L55 65 Q40 70 25 65 Z" fill="black"/><text x="0" y="100" font-size="7" font-weight="bold">Inv Tri</text></g></svg></div>', unsafe_allow_html=True)
+else:
+    st.sidebar.markdown('<div class="kurti-box"><svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg"><g transform="translate(10,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M15 22 L65 22 L60 70 L20 70 Z" fill="black"/><text x="5" y="100" font-size="8" font-weight="bold">Trapezoid</text></g><g transform="translate(110,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 22 L60 22 L60 70 L20 70 Z" fill="black"/><text x="8" y="100" font-size="8" font-weight="bold">Rectangle</text></g><g transform="translate(210,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><ellipse cx="40" cy="45" rx="20" ry="25" fill="black"/><text x="15" y="100" font-size="9" font-weight="bold">Oval</text></g><g transform="translate(310,5)"><circle cx="40" cy="12" r="8" fill="none" stroke="black" stroke-width="1.3"/><path d="M20 70 L60 70 L40 22 Z" fill="black"/><text x="10" y="100" font-size="8" font-weight="bold">Triangle</text></g></svg></div>', unsafe_allow_html=True)
+
 opts = ["Pear","Hourglass","Rectangle","Inverted Triangle","Apple"] if gender=="Female" else ["Trapezoid","Rectangle","Oval","Triangle","Inverted Triangle"]
 for b in opts:
     if st.sidebar.button(b, key="b_"+b, use_container_width=True, type="primary" if st.session_state.sel_body==b else "secondary"):
         st.session_state.sel_body=b
 body_shape=st.session_state.sel_body
+
 st.sidebar.markdown("**Select Skin Tone:**")
 st.sidebar.markdown('<div style="background:white; border-radius:12px; border:2px solid #FFD700; padding:10px; text-align:center;"><div style="display:inline-block; text-align:center; margin:5px;"><div class="skin-circle" style="background:#F8D5C2;"></div><br><b style="font-size:10px;">Fair</b></div><div style="display:inline-block; text-align:center; margin:5px;"><div class="skin-circle" style="background:#E5B08D;"></div><br><b style="font-size:10px;">Wheatish</b></div><div style="display:inline-block; text-align:center; margin:5px;"><div class="skin-circle" style="background:#C6866A;"></div><br><b style="font-size:10px;">Dusky</b></div><div style="display:inline-block; text-align:center; margin:5px;"><div class="skin-circle" style="background:#8D5524;"></div><br><b style="font-size:10px;">Deep</b></div></div>', unsafe_allow_html=True)
 for s in ["Fair","Wheatish","Dusky","Deep"]:
@@ -77,6 +93,7 @@ season=st.sidebar.selectbox("7. Season", ["Summer","Winter","Monsoon","Autumn","
 occasion=st.sidebar.selectbox("8. Place / Occasion (10+)", ["Office","Party","Wedding","Temple","College","Date","Casual Outing","Festive","Interview","Travel","Brunch","Everyday"])
 find_btn=st.sidebar.button("Find My Perfect Dress", use_container_width=True, type="primary")
 st.sidebar.info("BCA Final Year Project - SmartWardrobe AI")
+
 suit_dict={"Pear":"A-line Kurta, Wide Palazzo","Hourglass":"Bodycon Dress, Silk Saree","Rectangle":"Ruffle Top, Peplum Kurta","Apple":"Empire Waist Kurta","Inverted Triangle":"Flared Bottom","Trapezoid":"Fitted Kurta","Oval":"Oversized Shirt","Triangle":"Layered Top"}
 avoid_dict={"Pear":"Avoid tight bottoms","Hourglass":"Avoid oversized","Rectangle":"Avoid boxy cuts","Apple":"Avoid tight belt","Inverted Triangle":"Avoid puffy sleeves","Trapezoid":"Avoid baggy","Oval":"Avoid tight t-shirt","Triangle":"Avoid tight chest"}
 color_dict={"Fair":"Pastel Pink, Lavender","Wheatish":"Mustard, Olive, Teal - Best Indian tone!","Dusky":"Royal Blue, Emerald","Deep":"Cobalt Blue, Ruby Red"}
@@ -173,19 +190,4 @@ with tab2:
     f_list = footwear_f if gender=="Female" else footwear_m
     f_cols = st.columns(4)
     for f_idx, f_name in enumerate(f_list[:10]):
-        with f_cols[f_idx%4]:
-            chosen_color = random.choice(my_best_colors)
-            st.markdown("<div class='dress-card'><b>"+f_name+"</b><br><small>Comfort + Style</small><br>"+chosen_color+"<br><small>For "+season+"</small></div>", unsafe_allow_html=True)
-            if st.button("Add Footwear", key="foot_"+str(f_idx)+"_"+gender+"_"+style):
-                st.session_state.wishlist.append({"name": f_name, "type": "Footwear", "color": chosen_color, "style": style, "occasion":[occasion], "season":[season]})
-                st.toast(f_name+" Added!")
-with tab3:
-    st.subheader("Wishlist - "+str(len(st.session_state.wishlist))+" items")
-    if not st.session_state.wishlist:
-        st.write("No items added yet")
-    else:
-        for d in st.session_state.wishlist:
-            st.write("✅ "+d["name"]+" - "+d.get("type","Dress")+" ("+d.get("color","")+")")
-        if st.button("Clear Wishlist"):
-            st.session_state.wishlist=[]
-            st.rerun()
+        with f_cols[f_i
